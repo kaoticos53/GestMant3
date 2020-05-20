@@ -1,24 +1,20 @@
-import "./bootstrap";
+// import "./bootstrap";
 import Vue from "vue";
-import "@/js/registerServiceWorker";
-import store from "@/js/stores/store";
-import "@/js/plugins/axios";
-import vuetify from "@/js/plugins/vuetify";
+import App from "./views/app";
+import "./registerServiceWorker";
+import router from "./router/routes.js";
+import store from "./stores/store";
+import vuetify from "./plugins/vuetify";
 
-window.$ = window.jQuery = require("jquery");
+// import "./plugins/axios";
+// window.$ = window.jQuery = require("jquery");
 
-let token = localStorage.getItem("api_token");
+// let token = localStorage.getItem("api_token");
 
-axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-axios.defaults.headers.post["Content-Type"] = "application/json";
+// axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+// axios.defaults.headers.post["Content-Type"] = "application/json";
 
 // window.token = token
-
-// Route Information for Vue Router
-import router from "@/js/routes.js";
-
-// Component File
-import App from "@/js/views/app";
 
 // Set the base URL of the API
 // ApiService.init(process.env.VUE_APP_ROOT_API)
@@ -28,23 +24,7 @@ import App from "@/js/views/app";
 //  ApiService.setHeader()
 //}
 
-Vue.component("login", require("./components/login"));
-Vue.component(
-  "passport-clients",
-  require("./components/passport/Clients.vue").default
-);
-
-Vue.component(
-  "passport-authorized-clients",
-  require("./components/passport/AuthorizedClients.vue").default
-);
-
-Vue.component(
-  "passport-personal-access-tokens",
-  require("./components/passport/PersonalAccessTokens.vue").default
-);
-
-// Vue.use(vuetify)
+Vue.config.productionTip = false;
 
 const app = new Vue({
   el: "#app",

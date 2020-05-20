@@ -33,4 +33,16 @@ const TokenService = {
   },
 };
 
-export { TokenService };
+const CurrentUser = {
+  storeUser(user) {
+    localStorage.setItem("user_name", user.name);
+    localStorage.setItem("user_email", user.email);
+  },
+
+  removeUser() {
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_email");
+  },
+};
+
+export { TokenService, CurrentUser };

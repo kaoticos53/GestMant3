@@ -1,5 +1,6 @@
 import ApiService from "./api.service";
-import { TokenService } from "./storage.service";
+import { TokenService, CurrentUser } from "./storage.service";
+import store from "../stores/store";
 
 class AuthenticationError extends Error {
   constructor(errorCode, message) {
@@ -20,10 +21,10 @@ const UserService = {
   login: async function (email, password) {
     const requestData = {
       method: "post",
-      url: "/o/token/",
+      url: "api/login",
       data: {
         grant_type: "password",
-        username: email,
+        email: email,
         password: password,
       },
       auth: {
@@ -40,6 +41,8 @@ const UserService = {
       ApiService.setHeader();
 
       ApiService.mount401Interceptor();
+
+      CurrentUser.storeUser(response.data.user);
 
       return response.data.access_token;
     } catch (error) {
@@ -97,8 +100,21 @@ const UserService = {
     TokenService.removeRefreshToken();
     ApiService.removeHeader();
 
+    CurrentUser.removeUser();
+
     // NOTE: Again, we'll cover the 401 Interceptor a bit later.
     ApiService.unmount401Interceptor();
+  },
+
+  /**
+   * Retorna el usuario al que pertenece el token
+   */
+  getUser: async function () {
+    try {
+      const response = await ApiService.get("/api/users/current");
+      console.log(response);
+      return response;
+    } catch (error) {}
   },
 };
 

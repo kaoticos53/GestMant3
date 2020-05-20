@@ -1,17 +1,15 @@
-const mix = require('laravel-mix')
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+const mix = require("laravel-mix");
+const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin");
 
 mix.webpackConfig({
   resolve: {
-    extensions: ['.js', '.vue'],
+    extensions: [".js", ".vue"],
     alias: {
-      '@': path.join(__dirname, './resources')
-    }
+      "@": path.join(__dirname, "./resources"),
+    },
   },
-  plugins: [
-    new VuetifyLoaderPlugin()
-  ]
-})
+  plugins: [new VuetifyLoaderPlugin()],
+});
 
 /*
  |--------------------------------------------------------------------------
@@ -24,7 +22,23 @@ mix.webpackConfig({
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-  .sass('resources/sass/app.scss', 'public/css')
+mix
+  .js("resources/js/app.js", "public/js")
+  .sass("resources/sass/app.scss", "public/css")
+  .webpackConfig({
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+          options: { appendTsSuffixTo: [/\.vue$/] },
+          exclude: /node_modules/,
+        },
+      ],
+    },
+    resolve: {
+      extensions: ["*", ".js", ".jsx", ".vue", ".ts", ".tsx"],
+    },
+  });
 
-mix.browserSync('127.0.0.1:8000')
+mix.browserSync("127.0.0.1:8000");

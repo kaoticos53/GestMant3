@@ -5,7 +5,11 @@
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list dense>
         <!-- Menú lateral -->
-        <router-link v-for="(menu, index) in menus" :key="index" :to="{ name: menu.route }">
+        <router-link
+          v-for="(menu, index) in menus"
+          :key="index"
+          :to="{ name: menu.route }"
+        >
           <v-list-item link>
             <v-list-item-action>
               <v-icon>{{ menu.icono }}</v-icon>
@@ -23,12 +27,12 @@
       <v-toolbar-title>Gestión de Mantenimiento</v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
+      <v-badge content="6" :value="5" color="red" bordered overlap>
+        <v-icon large>mdi-bell</v-icon>
+      </v-badge>
       <router-link :to="{ name: 'login' }">
         <v-btn icon>
-          <v-icon>{{ loginIcon }}</v-icon>
+          <v-icon>{{ isLoggedIn ? "mdi-face" : "mdi-lock" }}</v-icon>
         </v-btn>
       </router-link>
       <v-menu left bottom y-offset>
@@ -40,14 +44,29 @@
 
         <!-- Menú tres puntitos -->
         <v-list>
-          <v-list-item @click="logout">
+          <v-list-item @click="enviarLogout">
             <v-list-item-title>logout</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
 
+    <!-- Alertas -->
+
     <v-content>
+      <v-alert
+        class="mt-10"
+        :value="error"
+        border="left"
+        close-text="Close Alert"
+        color="deep-purple accent-4"
+        prominent
+        tile
+        dark
+        dismissible
+      >
+        Error: {{ mensaje }}
+      </v-alert>
       <router-view></router-view>
     </v-content>
     <!-- Pie de página -->
@@ -58,59 +77,37 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
+import router from "../router/routes";
+
 export default {
   props: {
-    source: String
+    source: String,
   },
   data: () => ({
     drawer: null,
-    isLogueado: false,
+    isLoged: false,
     menus: [
       { name: "inicio", icono: "mdi-view-dashboard", route: "home" },
       { name: "Usuarios", icono: "mdi-settings", route: "users.index" },
       { name: "Acerca de", icono: "mdi-settings", route: "about" },
-      { name: "Login", icono: "mdi-lock", route: "login" }
-    ]
+    ],
   }),
   computed: {
-    ...mapState(["usuario", "error", "isLogin"]),
-    ...mapState({
-      loginIcon(state) {
-        this.isLogueado = state.isLogin;
-        return state.isLogin ? "mdi-face" : "mdi-lock";
-      },
-      loggedIn: {
-        get() {
-          return this.$store.state.currentUser.loggedIn;
-        }
-      },
-      currentUser: {
-        get() {
-          return this.$store.state.currentUser.user;
-        }
-      }
-    })
+    ...mapGetters("auth", ["isLoggedIn"]),
+    ...mapGetters("status", ["mensaje", "error"]),
   },
+
   methods: {
-    logout() {
-      this.$store.dispatch("currentUser/logoutUser");
-      this.menus.pop();
-      this.menus.push({ name: "Login", icono: "mdi-face", route: "login" });
-    }
+    ...mapActions("auth", ["logout"]),
+
+    enviarLogout() {
+      this.logout();
+      //router.push("login");
+    },
   },
   created() {
     this.$vuetify.theme.dark = true;
-
-    if (localStorage.hasOwnProperty("api_token")) {
-      axios.defaults.headers.common["Authorization"] =
-        "Bearer " + localStorage.getItem("api_token");
-      this.$store.dispatch("currentUser/getUser");
-      // this.menus.push({ name: "Logout", icono: "mdi-lock", route: "logout" });
-    } else {
-      this.menus.push({ name: "Login", icono: "mdi-lock", route: "login" });
-      //window.location.replace("/login");
-    }
-  }
+  },
 };
 </script>

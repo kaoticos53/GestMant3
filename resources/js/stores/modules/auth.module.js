@@ -1,6 +1,6 @@
 import { UserService, AuthenticationError } from "../../services/user.service";
 import { TokenService } from "../../services/storage.service";
-import router from "../../routes";
+import router from "../../router/routes";
 
 const state = {
   authenticating: false,
@@ -34,6 +34,7 @@ const actions = {
 
     try {
       const token = await UserService.login(email, password);
+      console.log("---> loginSucces");
       commit("loginSuccess", token);
 
       // Redirect the user to the page he first tried to visit or to the home view
@@ -41,6 +42,7 @@ const actions = {
 
       return true;
     } catch (e) {
+      console.log("---> loginerror: ", e);
       if (e instanceof AuthenticationError) {
         commit("loginError", {
           errorCode: e.errorCode,
