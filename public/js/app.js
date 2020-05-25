@@ -6300,7 +6300,7 @@ var render = function() {
                 overlap: ""
               }
             },
-            [_c("v-icon", { attrs: { large: "" } }, [_vm._v("mdi-bell")])],
+            [_c("v-icon", [_vm._v("mdi-bell")])],
             1
           ),
           _vm._v(" "),

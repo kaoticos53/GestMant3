@@ -28,7 +28,7 @@
       <v-spacer></v-spacer>
 
       <v-badge content="6" :value="5" color="red" bordered overlap>
-        <v-icon large>mdi-bell</v-icon>
+        <v-icon>mdi-bell</v-icon>
       </v-badge>
       <router-link :to="{ name: 'login' }">
         <v-btn icon>
